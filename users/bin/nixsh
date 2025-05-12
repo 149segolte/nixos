@@ -1,0 +1,16 @@
+#!/usr/bin/env nix-shell
+#! nix-shell -i bash --pure
+#! nix-shell -p bash
+#! nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/tarball/nixos-24.11
+
+if [ -z "$1" ]; then
+  echo "Requires name of shell to use."
+else
+  path="/etc/nixos/shells/$1.nix"
+  if test -f path; then
+    echo "Switching to $1.nix ..."
+    exec "nix-shell /etc/nixos/shells/$1.nix"
+  else
+    echo "$1 does not exist."
+  fi
+fi
