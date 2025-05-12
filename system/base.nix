@@ -7,8 +7,11 @@
 
   # Nix settings
   nix = {
-    settings.experimental-features = [ "nix-command" "flakes" ];
     registry.nixpkgs.flake = configuration.inputs.nixpkgs;
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      trusted-users = [ "${configuration.user}" ];
+    };
   };
 
   # Base packages
