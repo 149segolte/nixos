@@ -12,6 +12,7 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = if (configuration.uefi == true) then true else false;
   boot.loader.efi.canTouchEfiVariables = if (configuration.uefi == true) then true else false;
+  boot.loader.systemd-boot.configurationLimit = 10;
 
   # Hardware configuration
   boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod" ];
