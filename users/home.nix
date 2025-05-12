@@ -6,7 +6,7 @@
   home.packages = with pkgs; [
     fish wget bc file which neovim tree
   ] ++ lib.optionals (configuration.minimal == false) [
-    aria2 nmap ripgrep eza fzf libqalculate
+    devenv aria2 nmap ripgrep eza fzf libqalculate
   ] ++ lib.optionals (configuration.gui == true) [
     google-chrome
   ];

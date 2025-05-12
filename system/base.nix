@@ -23,6 +23,19 @@
   # Base packages
   environment.systemPackages = with pkgs; [
     curl btop python3
+
+    (let base = appimageTools.defaultFhsEnvArgs; in
+      buildFHSUserEnv (base // {
+      name = "fhs";
+      targetPkgs = pkgs:
+        (base.targetPkgs pkgs) ++ (with pkgs; [
+          pkg-config
+          ncurses
+        ]);
+      profile = "export FHS=1";
+      runScript = "bash";
+      extraOutputsToInstall = ["dev"];
+    }))
   ];
 
   programs.git.enable = true;
