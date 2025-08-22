@@ -1,6 +1,6 @@
-{ config, lib, pkgs, configuration, ... }: {
+{ config, lib, pkgs, ... }: {
   # Enable Unfree packages
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = lib.mkForce true;
 
   # Enable OpenGL
   hardware.graphics = {
@@ -14,7 +14,6 @@
   environment.systemPackages = with pkgs; [
     pciutils egl-wayland
   ];
-
 
   hardware.nvidia = {
     # Modesetting is required.

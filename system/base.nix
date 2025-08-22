@@ -1,16 +1,29 @@
-{ config, lib, pkgs, configuration, ... }: {
+{ config, lib, pkgs, variables, ... }: {
   # System defaults
-  networking.hostName = configuration.name;
+  networking.hostName = variables.name;
   time.timeZone = "America/New_York";
-  i18n.defaultLocale = "en_US.UTF-8";
   environment.enableAllTerminfo = true;
+  users.mutableUsers = false;
+
+  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
+  };
 
   # Nix settings
   nix = {
-    registry.nixpkgs.flake = configuration.inputs.nixpkgs;
+    registry.nixpkgs.flake = variables.inputs.nixpkgs;
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "${configuration.user}" ];
+      trusted-users = [ "${variables.user}" ];
       auto-optimise-store = true;
     };
     gc = {
@@ -20,24 +33,6 @@
     };
   };
 
-  # Base packages
-  environment.systemPackages = with pkgs; [
-    curl btop python3
-
-    (let base = appimageTools.defaultFhsEnvArgs; in
-      buildFHSUserEnv (base // {
-      name = "fhs";
-      targetPkgs = pkgs:
-        (base.targetPkgs pkgs) ++ (with pkgs; [
-          pkg-config
-          ncurses
-        ]);
-      profile = "export FHS=1";
-      runScript = "bash";
-      extraOutputsToInstall = ["dev"];
-    }))
-  ];
-
   programs.git.enable = true;
   programs.less.enable = true;
 
@@ -46,15 +41,12 @@
     clock24 = true;
   };
 
-  programs.vim = {
+  programs.neovim = {
     enable = true;
     defaultEditor = true;
   };
 
   # Enable services
-
-  services.qemuGuest.enable = true;
-
   services.zram-generator = {
     enable = true;
     settings.zram0 = {};
@@ -68,6 +60,6 @@
     };
   };
 
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 }
 

@@ -1,5 +1,5 @@
 {
-  description = "NixOS flake configuration";
+  description = "NixOS flake configurations";
 
   nixConfig = {
     extra-substituters = [
@@ -15,67 +15,89 @@
       type = "github";
       owner = "NixOS";
       repo = "nixpkgs";
-      ref = "nixos-24.11";
+      ref = "nixos-25.05";
     };
 
     home-manager = {
       type = "github";
       owner = "nix-community";
       repo = "home-manager";
-      ref = "release-24.11";
+      ref = "release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
+  # type = [
+  #   "normal" # UEFI, GPU, KDE Plasma, Home Manager
+  #   "qemu"   # BIOS, Minimal
+  #   "rpi"    # BIOS, Minimal, tmpfs
+  # ];
+
   outputs = inputs@{ self, nixpkgs, home-manager, ... }: {
     nixosConfigurations = {
       devnix = let
-        configuration = {
+        variables = {
           inputs = inputs;
           name = "devnix";
           user = "one49segolte";
           system = "x86_64-linux";
-          uefi = true;
-          minimal = false;
-          gui = true;
+          type = "normal";
         };
       in nixpkgs.lib.nixosSystem {
-        system = configuration.system;
+        system = variables.system;
 
-        specialArgs = { inherit configuration; };
+        specialArgs = { inherit variables; };
         modules = [
           ./system/base.nix
-          ./system/plasma.nix
-          ./system/proxmox/host.nix
-          ./users/default.nix
+          ./system/custom
+          ./users/base.nix
 
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
-            home-manager.users."${configuration.user}" = import ./users/home.nix;
-            home-manager.extraSpecialArgs = { inherit configuration; };
+            home-manager.users."${variables.user}" = import ./users/home_manager.nix;
+            home-manager.extraSpecialArgs = { inherit variables; };
           }
         ];
       };
 
-      nixvm = let
-        configuration = {
+      vmnix = let
+        variables = {
           inputs = inputs;
           name = "nixvm";
-          user = "one49segolte";
+          user = "nixos";
           system = "x86_64-linux";
-          uefi = false;
-          minimal = true;
-          gui = false;
+	  type = "qemu";
         };
       in nixpkgs.lib.nixosSystem {
-        system = configuration.system;
+        system = variables.system;
 
-        specialArgs = { inherit configuration; };
+        specialArgs = { inherit variables; };
         modules = [
           ./system/base.nix
+          ./system/custom
+          ./users/base.nix
+        ];
+      };
+
+      rpinix = let
+        variables = {
+          inputs = inputs;
+          name = "rpinix";
+          user = "one49segolte";
+          system = "x86_64-linux";
+	  type = "rpi";
+        };
+      in nixpkgs.lib.nixosSystem {
+        system = variables.system;
+
+        specialArgs = { inherit variables; };
+        modules = [
+          ./system/base.nix
+          ./system/custom
+          ./users/base.nix
         ];
       };
     };

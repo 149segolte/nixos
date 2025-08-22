@@ -25,12 +25,10 @@
   # - Panel: translucent
   # - Pined apps: settings, files, ghostty, browser
 
-  # Start sunshine server
-  services.sunshine = {
-    enable = true;
-    autoStart = true;
-    capSysAdmin = true;
-    openFirewall = true;  
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
   };
 
   # Enable sound.
@@ -38,6 +36,8 @@
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
     pulse.enable = true;
   };
 }
