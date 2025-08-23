@@ -15,29 +15,15 @@
       theme = "tokyonight";
       command = "fish";
       background-opacity = 0.9;
-      font-size = 15;
+      font-size = 12;
     };
   };
 
   programs.fish = {
     enable = true;
     plugins = [
-      {
-        name = "z";
-        src = pkgs.fetchFromGitHub {
-          owner = "IlanCosman";
-          repo = "tide";
-          rev = "v6";
-        };
-      }
-      {
-        name = "z";
-        src = pkgs.fetchFromGitHub {
-          owner = "PatrickF1";
-          repo = "fzf.fish";
-          rev = "main";
-        };
-      }
+      { name = "tide"; src = pkgs.fishPlugins.tide.src; }
+      { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
     ];
     shellAliases = {
       cat = "bat";
