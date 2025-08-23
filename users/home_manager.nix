@@ -5,7 +5,7 @@
 
   home.packages = with pkgs; [ ] ++ lib.optionals (variables.type == "normal") [
     aria2 bat dust eza fd fzf gh nushell ripgrep zoxide
-    google-chrome copyq zed-editor localsend spotify tailscale vscode
+    google-chrome copyq zed-editor localsend spotify vscode
   ];
 
   programs.ghostty = {

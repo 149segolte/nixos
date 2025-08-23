@@ -14,7 +14,7 @@
   ];
 
   # Bootloader
-  boot.loader.grub.enable = lib.mkForce false;
+  boot.loader.grub.enable = lib.mkDefault false;
   boot.loader.systemd-boot.enable = lib.mkDefault true;
   boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = lib.mkDefault false;

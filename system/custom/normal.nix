@@ -10,8 +10,21 @@
 
   # Enable networking
   networking.networkmanager.enable = lib.mkForce true;
-  networking.networkmanager.wifi.backend = "iwd";
-  networking.wireless.iwd.enable = lib.mkForce true;
+  networking.firewall.trustedInterfaces = [ "incusbr0" "tailscale0" ];
+  services.resolved = {
+    enable = true;
+    domains = [ "~." ];
+    dnssec = "true";
+  };
+  networking.nameservers = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
+
+  # Incus
+  virtualisation.incus.enable = true;
+  environment.systemPackages = with pkgs; [ incus-ui-canonical distrobuilder ];
+
+  # Tailscale
+  services.tailscale.enable = true;
+  networking.interfaces."tailscale0".useDHCP = lib.mkForce false;
 
   # Hardware configuration
   boot.initrd.availableKernelModules = [
