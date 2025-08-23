@@ -1,4 +1,10 @@
 { config, lib, pkgs, variables, ... }: {
+  # CPU
+  powerManagement.cpufreq = {
+    min =  800000;
+    max = 3200000;
+  };
+
   # Bootloader
   boot.loader.efi.canTouchEfiVariables = lib.mkForce true;
 
@@ -46,6 +52,12 @@
     { device = "/dev/disk/by-label/BOOT";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
+    };
+
+  fileSystems."/mnt/data" =
+    { device = "/dev/disk/by-label/extra1";
+      fsType = "btrfs";
+      options = [ "subvol=/" "compress=zstd" ];
     };
 
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
