@@ -1,12 +1,27 @@
-{ config, lib, pkgs, variables, ... }: {
-  home.username = variables.user;
-  home.homeDirectory = "/home/${variables.user}";
+{ config, lib, pkgs, custom, ... }: {
+  home.username = custom.user;
+  home.homeDirectory = "/home/${custom.user}";
   # home.shell.enableShellIntegration = true;
 
-  home.packages = with pkgs; [ ] ++ lib.optionals (variables.type == "normal") [
-    aria2 bat dust eza fd fzf gh nushell ripgrep zoxide
-    google-chrome copyq zed-editor localsend spotify vscode
-  ];
+  home.packages = with pkgs;
+    [ ] ++ lib.optionals (custom.type == "normal") [
+      aria2
+      bat
+      dust
+      eza
+      fd
+      fzf
+      gh
+      nushell
+      ripgrep
+      zoxide
+      google-chrome
+      copyq
+      zed-editor
+      localsend
+      spotify
+      vscode
+    ];
 
   programs.ghostty = {
     enable = true;
@@ -22,8 +37,14 @@
   programs.fish = {
     enable = true;
     plugins = [
-      { name = "tide"; src = pkgs.fishPlugins.tide.src; }
-      { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
+      {
+        name = "tide";
+        src = pkgs.fishPlugins.tide.src;
+      }
+      {
+        name = "fzf-fish";
+        src = pkgs.fishPlugins.fzf-fish.src;
+      }
     ];
     shellAliases = {
       cat = "bat";
