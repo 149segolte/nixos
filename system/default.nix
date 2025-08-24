@@ -31,7 +31,7 @@
   # Nix
   nixpkgs.config.allowUnfree = (custom.type == "normal");
   nix = {
-    registry.nixpkgs.flake = custom.inputs.nixpkgs;
+    registry.nixpkgs.flake = custom.inputs.nixpkgs-unstable;
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ "${custom.user}" ];

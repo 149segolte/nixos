@@ -22,13 +22,17 @@
     }
     {
       "normal" = {
-        aria2.enable = true;
         tailscale.enable = true;
+
+        # aria2 = {
+        #   enable = true;
+        #   rpcSecretFile = "/run/secrets/aria2-rpc-secret";
+        # };
 
         dnscrypt-proxy2 = {
           enable = true;
           settings = {
-                        odoh_servers = true;
+            odoh_servers = true;
             require_dnssec = true;
             require_nolog = true;
             http3 = true;
