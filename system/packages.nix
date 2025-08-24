@@ -1,6 +1,16 @@
-{ config, lib, pkgs, modulesPath, custom, ... }: {
-  environment.systemPackages = with pkgs;
-    [ # Ensure anyways
+{
+config,
+lib,
+pkgs,
+modulesPath,
+custom,
+...
+}:
+{
+  environment.systemPackages =
+with pkgs;
+    [
+# Ensure anyways
       bash
       coreutils
       findutils
@@ -8,14 +18,18 @@
       pciutils
       usbutils
       util-linux
-    ] ++ [ # Basics
+    ]
+++ [
+# Basics
       file
       which
       gnutar
       wget
       curl
       python3
-    ] ++ [ # Tools
+    ]
+++ [
+# Tools
       ripgrep
       btop
       eza
@@ -55,7 +69,9 @@
           cat = "bat";
           cd = "z";
         };
-        shellAbbrs = { ll = "ls -la"; };
+        shellAbbrs = {
+ll = "ls -la";
+};
       };
     }
     {
@@ -80,6 +96,7 @@
       };
       "qemu" = { };
       "rpi" = { };
-    }."${custom.type}"
+    }
+."${custom.type}"
   ];
 }

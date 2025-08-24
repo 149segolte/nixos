@@ -1,4 +1,11 @@
-{ config, lib, pkgs, configuration, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  configuration,
+  ...
+}:
+{
   services.xserver.enable = true;
   services.desktopManager.plasma6.enable = true;
 
@@ -41,4 +48,3 @@
     pulse.enable = true;
   };
 }
-

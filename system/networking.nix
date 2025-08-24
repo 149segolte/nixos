@@ -1,11 +1,22 @@
-{ config, lib, pkgs, modulesPath, custom, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  custom,
+  ...
+}:
+{
   networking = lib.mergeAttrsList [
     {
       hostName = custom.name;
       useDHCP = true;
       nftables.enable = true;
 
-      nameservers = [ "1.1.1.1#cloudflare-dns" "1.0.0.1#cloudflare-dns" ];
+      nameservers = [
+        "1.1.1.1#cloudflare-dns"
+        "1.0.0.1#cloudflare-dns"
+      ];
 
       timeServers = [
         "3.pool.ntp.org"
@@ -33,7 +44,10 @@
         };
       };
       "qemu" = { };
-      "rpi" = { wireless.enable = true; };
-    }."${custom.type}"
+      "rpi" = {
+        wireless.enable = true;
+      };
+    }
+    ."${custom.type}"
   ];
 }

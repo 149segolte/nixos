@@ -1,4 +1,12 @@
-{ config, lib, pkgs, modulesPath, custom, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  custom,
+  ...
+}:
+{
   # Bootloader
   boot.loader = lib.mergeAttrsList [
     {
@@ -7,21 +15,43 @@
       systemd-boot.configurationLimit = 10;
     }
     {
-      "normal" = { efi.canTouchEfiVariables = true; };
+      "normal" = {
+        efi.canTouchEfiVariables = true;
+      };
       "qemu" = { };
       "rpi" = {
         systemd-boot.enable = false;
         generic-extlinux-compatible.enable = true;
       };
-    }."${custom.type}"
+    }
+    ."${custom.type}"
   ];
 
   # Kernel
-  boot.initrd.availableKernelModules = {
-    "normal" = [ "sd_mod" "ahci" "xhci_pci" "nvme" "usbhid" "usb_storage" ];
-    "qemu" = [ "sd_mod" "ahci" "uhci_hcd" "ehci_pci" "sr_mod" ];
-    "rpi" = [ "xhci_pci" "usbhid" "usb_storage" ];
-  }."${custom.type}";
+  boot.initrd.availableKernelModules =
+    {
+      "normal" = [
+        "sd_mod"
+        "ahci"
+        "xhci_pci"
+        "nvme"
+        "usbhid"
+        "usb_storage"
+      ];
+      "qemu" = [
+        "sd_mod"
+        "ahci"
+        "uhci_hcd"
+        "ehci_pci"
+        "sr_mod"
+      ];
+      "rpi" = [
+        "xhci_pci"
+        "usbhid"
+        "usb_storage"
+      ];
+    }
+    ."${custom.type}";
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = lib.mkIf (custom.type == "normal") [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
@@ -34,12 +64,18 @@
       "/" = {
         device = "/dev/disk/by-label/root";
         fsType = "btrfs";
-        options = [ "subvol=@" "compress=zstd" ];
+        options = [
+          "subvol=@"
+          "compress=zstd"
+        ];
       };
       "/boot" = {
         device = "/dev/disk/by-label/BOOT";
         fsType = "vfat";
-        options = [ "fmask=0077" "dmask=0077" ];
+        options = [
+          "fmask=0077"
+          "dmask=0077"
+        ];
       };
     }
     {
@@ -47,7 +83,10 @@
         "/mnt/data" = {
           device = "/dev/disk/by-label/extra1";
           fsType = "btrfs";
-          options = [ "subvol=/" "compress=zstd" ];
+          options = [
+            "subvol=/"
+            "compress=zstd"
+          ];
         };
       };
       "qemu" = { };
@@ -59,10 +98,12 @@
         };
         "/boot" = null;
       };
-    }."${custom.type}"
+    }
+    ."${custom.type}"
   ];
 
   # Extra flags
-  hardware.cpu.intel.updateMicrocode = lib.mkIf (custom.type == "normal")
-    (lib.mkDefault config.hardware.enableRedistributableFirmware);
+  hardware.cpu.intel.updateMicrocode = lib.mkIf (custom.type == "normal") (
+    lib.mkDefault config.hardware.enableRedistributableFirmware
+  );
 }

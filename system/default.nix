@@ -1,13 +1,24 @@
-{ config, lib, pkgs, modulesPath, custom, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  custom,
+  ...
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./packages.nix
     ./services.nix
     ./networking.nix
     ./hardware.nix
-  ] ++ lib.optionals (custom.type == "normal") [ ./custom.nix ./plasma.nix ]
-    ++ lib.optionals (custom.type == "qemu")
-    [ (modulesPath + "/profiles/qemu-guest.nix") ];
+  ]
+  ++ lib.optionals (custom.type == "normal") [
+    ./custom.nix
+    ./plasma.nix
+  ]
+  ++ lib.optionals (custom.type == "qemu") [ (modulesPath + "/profiles/qemu-guest.nix") ];
 
   # System defaults
   time.timeZone = custom.timezone or "America/New_York";
@@ -33,7 +44,10 @@
   nix = {
     registry.nixpkgs.flake = custom.inputs.nixpkgs-unstable;
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       trusted-users = [ "${custom.user}" ];
       auto-optimise-store = true;
     };

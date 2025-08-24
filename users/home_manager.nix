@@ -1,16 +1,27 @@
-{ config, lib, pkgs, custom, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  custom,
+  ...
+}:
+{
   home.username = custom.user;
   home.homeDirectory = "/home/${custom.user}";
   # home.shell.enableShellIntegration = true;
 
-  home.packages = with pkgs;
-    [ # GUI
+  home.packages =
+    with pkgs;
+    [
+      # GUI
       google-chrome
       copyq
       zed-editor
       spotify
       vscode
-    ] ++ [ # CLI
+    ]
+    ++ [
+      # CLI
       dust
       fd
       fzf
