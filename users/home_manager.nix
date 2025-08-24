@@ -4,23 +4,18 @@
   # home.shell.enableShellIntegration = true;
 
   home.packages = with pkgs;
-    [ ] ++ lib.optionals (custom.type == "normal") [
-      aria2
-      bat
+    [ # GUI
+      google-chrome
+      copyq
+      zed-editor
+      spotify
+      vscode
+    ] ++ [ # CLI
       dust
-      eza
       fd
       fzf
       gh
       nushell
-      ripgrep
-      zoxide
-      google-chrome
-      copyq
-      zed-editor
-      localsend
-      spotify
-      vscode
     ];
 
   programs.ghostty = {
@@ -46,28 +41,7 @@
         src = pkgs.fishPlugins.fzf-fish.src;
       }
     ];
-    shellAliases = {
-      cat = "bat";
-      cd = "z";
-      grep = "rg";
-      ls = "eza";
-      ll = "eza -la";
-    };
-    shellInitLast = "zoxide init fish | source";
   };
-
-  # Services
-  services.gpg-agent = {
-    enable = true;
-    enableSshSupport = true;
-  };
-
-  # # link all files in `./bin` to `~/.local/bin/`
-  # home.file."./.local/bin" = {
-  #   source = ./bin;
-  #   recursive = true;
-  #   executable = true;
-  # };
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage
