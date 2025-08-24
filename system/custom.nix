@@ -14,4 +14,16 @@
 
   # Cross build nixos images
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
+  # Virtualization
+  virtualisation = {
+    spiceUSBRedirection.enable = true;
+    libvirtd = {
+      enable = true;
+      qemu = {
+        vhostUserPackages = with pkgs; [ virtiofsd ];
+        swtpm.enable = true;
+      };
+    };
+  };
 }

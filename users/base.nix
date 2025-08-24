@@ -18,7 +18,8 @@
       ]
       ++ lib.optionals (custom.type == "normal") [
         "networkmanager"
-              ];
+        "libvirtd"
+      ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHFIU5xOs/DQE3IrT8q5g6ZqGT+w2NRhlhn1n/xeYbLN one49segolte@yigirus"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP6USZNyBDAhWgKzTo17wcYwt/FcucOf2z1F0kewJksA one49segolte@devnix"

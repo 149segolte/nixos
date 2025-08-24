@@ -1,16 +1,16 @@
 {
-config,
-lib,
-pkgs,
-modulesPath,
-custom,
-...
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  custom,
+  ...
 }:
 {
   environment.systemPackages =
-with pkgs;
+    with pkgs;
     [
-# Ensure anyways
+      # Ensure anyways
       bash
       coreutils
       findutils
@@ -19,8 +19,8 @@ with pkgs;
       usbutils
       util-linux
     ]
-++ [
-# Basics
+    ++ [
+      # Basics
       file
       which
       gnutar
@@ -28,8 +28,8 @@ with pkgs;
       curl
       python3
     ]
-++ [
-# Tools
+    ++ [
+      # Tools
       ripgrep
       btop
       eza
@@ -70,12 +70,14 @@ with pkgs;
           cd = "z";
         };
         shellAbbrs = {
-ll = "ls -la";
-};
+          ll = "ls -la";
+        };
       };
     }
     {
       "normal" = {
+        virt-manager.enable = true;
+
         gnupg = {
           package = pkgs.gnupg1;
           agent = {
@@ -97,6 +99,6 @@ ll = "ls -la";
       "qemu" = { };
       "rpi" = { };
     }
-."${custom.type}"
+    ."${custom.type}"
   ];
 }
