@@ -33,6 +33,7 @@
       ripgrep
       btop
       eza
+      iw
     ];
 
   programs = lib.mergeAttrsList (

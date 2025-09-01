@@ -30,13 +30,14 @@
         firewall.trustedInterfaces = lib.mkIf (lib.elem "tailscale" custom.tags) [ "tailscale0" ];
       }
     ]
-    ++ lib.optional (lib.elem "rpi" custom.tags) {
+    ++ lib.optional (lib.elem "wpa_supplicant" custom.tags) {
       wireless.enable = true;
     }
     ++ lib.optional (lib.elem "nm" custom.tags) {
       networkmanager = {
         enable = true;
         dns = "systemd-resolved";
+	wifi.powersave = !(lib.elem "rpi" custom.tags);
       };
     }
     ++ lib.optional (lib.elem "dnscrypt" custom.tags) {
