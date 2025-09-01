@@ -4,6 +4,7 @@
   pkgs,
   modulesPath,
   custom,
+  inputs,
   ...
 }:
 {
@@ -13,12 +14,10 @@
     ./services.nix
     ./networking.nix
     ./hardware.nix
-  ]
-  ++ lib.optionals (custom.type == "normal") [
     ./custom.nix
-    ./plasma.nix
   ]
-  ++ lib.optionals (custom.type == "qemu") [ (modulesPath + "/profiles/qemu-guest.nix") ];
+  ++ lib.optional (lib.elem "gui" custom.tags) ./plasma.nix
+  ++ lib.optional (lib.elem "vm" custom.tags) (modulesPath + "/profiles/qemu-guest.nix");
 
   # System defaults
   time.timeZone = custom.timezone or "America/New_York";
@@ -40,9 +39,9 @@
   };
 
   # Nix
-  nixpkgs.config.allowUnfree = (custom.type == "normal");
+  nixpkgs.config.allowUnfree = (lib.elem "unfree" custom.tags);
   nix = {
-    registry.nixpkgs.flake = custom.inputs.nixpkgs-unstable;
+    registry.nixpkgs.flake = inputs.nixpkgs;
     settings = {
       experimental-features = [
         "nix-command"

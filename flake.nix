@@ -16,7 +16,7 @@
       ref = "nixos-25.05";
     };
 
-    nixpkgs-unstable = {
+    nixpkgs = {
       type = "github";
       owner = "NixOS";
       repo = "nixpkgs";
@@ -27,92 +27,80 @@
       type = "github";
       owner = "nix-community";
       repo = "home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      ref = "master";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
-  # type = [
-  #   "normal" # UEFI, GPU, KDE Plasma, Home Manager, etc
-  #   "qemu"   # BIOS, Minimal
-  #   "rpi"    # BIOS, Minimal, tmpfs
-  # ];
 
   outputs =
     {
       self,
       nixpkgs-stable,
-      nixpkgs-unstable,
+      nixpkgs,
       home-manager,
       ...
     }@inputs:
     {
-      nixosConfigurations = {
-        devnix =
-          let
-            custom = {
-              inputs = inputs;
+      nixosConfigurations =
+        nixpkgs.lib.mapAttrs
+          (
+            name: custom:
+            nixpkgs.lib.nixosSystem {
+              system = custom.system;
+              specialArgs = { inherit custom inputs; };
+              modules = [
+                ./system
+                ./users/base.nix
+              ]
+              ++
+                nixpkgs.lib.optionals
+                  (nixpkgs.lib.elem custom.name [
+                    "devnix"
+                  ])
+                  [
+                    home-manager.nixosModules.home-manager
+                    {
+                      home-manager.useGlobalPkgs = true;
+                      home-manager.useUserPackages = true;
+
+                      home-manager.users."${custom.user}" = ./users/home_manager.nix;
+                      home-manager.extraSpecialArgs = { inherit custom inputs; };
+                    }
+                  ];
+            }
+          )
+          {
+            devnix = {
               name = "devnix";
               user = "one49segolte";
               system = "x86_64-linux";
-              type = "normal";
+              tags = [
+                "vm"
+                "gui"
+                "dev"
+                "nm"
+                "unfree"
+                "tailscale"
+                "gpg"
+                "dnscrypt"
+              ];
             };
-          in
-          nixpkgs-unstable.lib.nixosSystem {
-            system = custom.system;
-            specialArgs = { inherit custom; };
-
-            modules = [
-              ./system
-              ./users/base.nix
-
-              home-manager.nixosModules.home-manager
-              {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-
-                home-manager.users."${custom.user}" = import ./users/home_manager.nix;
-                home-manager.extraSpecialArgs = { inherit custom; };
-              }
-            ];
-          };
-
-        vmnix =
-          let
-            custom = {
-              inputs = inputs;
+            nixvm = {
               name = "nixvm";
               user = "nixos";
               system = "x86_64-linux";
-              type = "qemu";
+              tags = [
+                "vm"
+              ];
             };
-          in
-          nixpkgs-stable.lib.nixosSystem {
-            system = custom.system;
-            specialArgs = { inherit custom; };
-            modules = [
-              ./system
-              ./users/base.nix
-            ];
-          };
-
-        rpinix =
-          let
-            custom = {
-              inputs = inputs;
+            rpinix = {
               name = "rpinix";
               user = "one49segolte";
-              system = "x86_64-linux";
-              type = "rpi";
+              system = "aarch64-linux";
+              tags = [
+                "rpi"
+              ];
             };
-          in
-          nixpkgs-stable.lib.nixosSystem {
-            system = custom.system;
-            specialArgs = { inherit custom; };
-            modules = [
-              ./system
-              ./users/base.nix
-            ];
           };
-      };
     };
 }

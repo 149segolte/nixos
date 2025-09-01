@@ -3,20 +3,21 @@
   lib,
   pkgs,
   modulesPath,
+  custom,
   ...
 }:
 {
   # CPU
-  powerManagement.cpufreq = {
+  powerManagement.cpufreq = lib.mkIf (lib.elem "baremetal" custom.tags) {
     min = 800000;
     max = 3200000;
   };
 
   # Cross build nixos images
-  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.emulatedSystems = lib.mkIf (lib.elem "dev" custom.tags) [ "aarch64-linux" ];
 
   # Virtualization
-  virtualisation = {
+  virtualisation = lib.mkIf (lib.elem "libvirt" custom.tags) {
     spiceUSBRedirection.enable = true;
     libvirtd = {
       enable = true;

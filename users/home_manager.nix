@@ -13,23 +13,21 @@
   home.packages =
     with pkgs;
     [
-      # GUI
-      google-chrome
-      copyq
-      zed-editor
-      spotify
-      vscode
-    ]
-    ++ [
-      # CLI
       dust
       fd
       fzf
       gh
       nushell
+    ]
+    ++ lib.optionals (lib.elem "gui" custom.tags) [
+      google-chrome
+      copyq
+      zed-editor
+      spotify
+      vscode
     ];
 
-  programs.ghostty = {
+  programs.ghostty = lib.mkIf (lib.elem "gui" custom.tags) {
     enable = true;
     enableFishIntegration = true;
     settings = {
@@ -42,14 +40,14 @@
 
   programs.fish = {
     enable = true;
-    plugins = [
+    plugins = with pkgs.fishPlugins; [
       {
         name = "tide";
-        src = pkgs.fishPlugins.tide.src;
+        src = tide.src;
       }
       {
         name = "fzf-fish";
-        src = pkgs.fishPlugins.fzf-fish.src;
+        src = fzf-fish.src;
       }
     ];
   };

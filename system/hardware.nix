@@ -8,64 +8,57 @@
 }:
 {
   # Bootloader
-  boot.loader = lib.mergeAttrsList [
-    {
-      grub.enable = false;
-      systemd-boot.enable = true;
-      systemd-boot.configurationLimit = 10;
+  boot.loader = lib.mergeAttrsList (
+    [
+      {
+        grub.enable = false;
+        systemd-boot.enable = true;
+        systemd-boot.configurationLimit = 10;
+      }
+    ]
+    ++ lib.optional (lib.elem "uefi" custom.tags) {
+      efi.canTouchEfiVariables = true;
     }
-    {
-      "normal" = {
-        efi.canTouchEfiVariables = true;
-      };
-      "qemu" = { };
-      "rpi" = {
-        systemd-boot.enable = false;
-        generic-extlinux-compatible.enable = true;
-      };
+    ++ lib.optional (lib.elem "rpi" custom.tags) {
+      systemd-boot.enable = false;
+      generic-extlinux-compatible.enable = true;
     }
-    ."${custom.type}"
-  ];
+  );
 
   # Kernel
-  boot.initrd.availableKernelModules =
-    {
-      "normal" = [
-        "sd_mod"
-        "ahci"
-        "xhci_pci"
-        "nvme"
-        "usbhid"
-        "usb_storage"
-      ];
-      "qemu" = [
-        "sd_mod"
-        "ahci"
-        "uhci_hcd"
-        "ehci_pci"
-        "sr_mod"
-      ];
-      "rpi" = [
-        "xhci_pci"
-        "usbhid"
-        "usb_storage"
-      ];
-    }
-    ."${custom.type}";
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "usbhid"
+    "usb_storage"
+  ]
+  ++ lib.optionals (lib.elem "baremetal" custom.tags) [
+    "sd_mod"
+    "ahci"
+    "nvme"
+  ]
+  ++ lib.optionals (lib.elem "vm" custom.tags) [
+    "sd_mod"
+    "ahci"
+    "uhci_hcd"
+    "ehci_pci"
+    "sr_mod"
+    "virtio_pci"
+    "virtio_scsi"
+  ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = lib.mkIf (custom.type == "normal") [ "kvm-intel" ];
+  boot.kernelModules = lib.mkIf (lib.elem "baremetal" custom.tags) [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   # Filesystems
   swapDevices = [ ];
 
-  fileSystems = lib.mergeAttrsList [
-    {
+  fileSystems = lib.mergeAttrsList (
+    [ ]
+    ++ lib.optional (!lib.elem "rpi" custom.tags) {
       "/" = {
         device = "/dev/disk/by-label/root";
         fsType = "btrfs";
         options = [
-          "subvol=@"
           "compress=zstd"
         ];
       };
@@ -78,32 +71,27 @@
         ];
       };
     }
-    {
-      "normal" = {
-        "/mnt/data" = {
-          device = "/dev/disk/by-label/extra1";
-          fsType = "btrfs";
-          options = [
-            "subvol=/"
-            "compress=zstd"
-          ];
-        };
-      };
-      "qemu" = { };
-      "rpi" = {
-        "/" = {
-          device = "/dev/disk/by-label/NIXOS_SD";
-          fsType = "ext4";
-          options = [ "noatime" ];
-        };
-        "/boot" = null;
+    ++ lib.optional (lib.elem "rpi" custom.tags) {
+      "/" = {
+        device = "/dev/disk/by-label/NIXOS_SD";
+        fsType = "ext4";
+        options = [ "noatime" ];
       };
     }
-    ."${custom.type}"
-  ];
+    ++ lib.optional (lib.elem "extra1" custom.tags) {
+      "/mnt/data" = {
+        device = "/dev/disk/by-label/extra1";
+        fsType = "btrfs";
+        options = [
+          "subvol=/"
+          "compress=zstd"
+        ];
+      };
+    }
+  );
 
   # Extra flags
-  hardware.cpu.intel.updateMicrocode = lib.mkIf (custom.type == "normal") (
+  hardware.cpu.intel.updateMicrocode = lib.mkIf (lib.elem "baremetal" custom.tags) (
     lib.mkDefault config.hardware.enableRedistributableFirmware
   );
 }
