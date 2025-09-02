@@ -99,11 +99,11 @@
               system = "aarch64-linux";
               tags = [
                 "rpi"
-		"unfree"
-		"nm"
-		"dnscrypt"
-		"tailscale"
-		"hostapd"
+                "unfree"
+                "nm"
+                "dnscrypt"
+                "tailscale"
+                # "hostapd"
               ];
             };
           };

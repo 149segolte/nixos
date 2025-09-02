@@ -37,9 +37,9 @@
       networkmanager = {
         enable = true;
         dns = "systemd-resolved";
-	wifi.powersave = !(lib.elem "rpi" custom.tags);
+        wifi.powersave = !(lib.elem "rpi" custom.tags);
         ensureProfiles.profiles."rpiin" = lib.mkIf (lib.elem "rpi" custom.tags) {
-           connection = {
+          connection = {
             id = "rpiin";
             type = "wifi";
             interface-name = "wlan0";
@@ -58,11 +58,8 @@
             method = "auto";
           };
         };
+        unmanaged = lib.mkIf (lib.elem "rpi" custom.tags) [ "wlp1s0u1u1" ];
       };
-    }
-    ++ lib.optional (lib.elem "hostapd" custom.tags) {
-      bridges.br0.interfaces = lib.mkIf (lib.elem "rpi" custom.tags) [ "wlp1s0u1u1" ];
-      networkmanager.unmanaged = lib.mkIf (lib.elem "rpi" custom.tags) [ "interface-name:wlp*" ];
     }
     ++ lib.optional (lib.elem "dnscrypt" custom.tags) {
       nameservers = [ "127.0.0.1" ];

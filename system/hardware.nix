@@ -47,7 +47,9 @@
   ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = lib.mkIf (lib.elem "baremetal" custom.tags) [ "kvm-intel" ];
-  boot.extraModulePackages = lib.mkIf (lib.elem "rpi" custom.tags) [ config.boot.kernelPackages.rtl88xxau-aircrack ];
+  boot.extraModulePackages = lib.mkIf (lib.elem "rpi" custom.tags) [
+    config.boot.kernelPackages.rtl88xxau-aircrack
+  ];
 
   # Filesystems
   swapDevices = [ ];

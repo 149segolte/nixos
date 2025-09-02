@@ -16,7 +16,7 @@
         if lib.elem "baremetal" custom.tags then
           "$y$j9T$nGliB/NCFoF/dmxMPF8Ak.$03nWUlv4WoenJsjF9Ftr85AKHGsF3rQHeXN0nFqdvWC"
         else
-	  "$y$j9T$xSW9de2cqWXtlEL.U1RG80$vVdKtDxUAayDg4DFjNaoCGxKhO8fR21HVEb.Br0DKh6";
+          "$y$j9T$xSW9de2cqWXtlEL.U1RG80$vVdKtDxUAayDg4DFjNaoCGxKhO8fR21HVEb.Br0DKh6";
       extraGroups = [
         "wheel"
       ]
