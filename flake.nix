@@ -105,6 +105,7 @@
                 "tailscale"
                 "hostapd"
                 "ntpd"
+                "kea"
               ];
             };
           };

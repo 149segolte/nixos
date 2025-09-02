@@ -67,6 +67,14 @@
     ++ lib.optional (lib.elem "dnscrypt" custom.tags) {
       nameservers = [ "127.0.0.1" ];
     }
+    ++ lib.optional (lib.elem "rpi" custom.tags) {
+      interfaces."wlp1s0u1u1".ipv4.addresses = [
+        {
+          address = "172.19.149.1";
+          prefixLength = 24;
+        }
+      ];
+    }
     ++ lib.optional (lib.elem "baremetal" custom.tags) {
       useDHCP = false;
       interfaces = {

@@ -174,5 +174,62 @@
         };
       };
     }
+    ++ lib.optional (lib.elem "kea" custom.tags) {
+      kea.dhcp4 = {
+        enable = true;
+        settings = {
+          interfaces-config = {
+            interfaces = lib.mkIf (lib.elem "rpi" custom.tags) [
+              "wlp1s0u1u1"
+            ];
+          };
+          lease-database = {
+            name = "/var/lib/kea/dhcp4.leases";
+            persist = true;
+            type = "memfile";
+          };
+          rebind-timer = 2000;
+          renew-timer = 1000;
+          valid-lifetime = 4000;
+          option-data = [
+            {
+              name = "routers";
+              code = 3;
+              space = "dhcp4";
+              data = "172.19.149.1";
+            }
+            {
+              name = "domain-name";
+              code = 15;
+              space = "dhcp4";
+              data = "segolte.arpa";
+            }
+            {
+              name = "domain-name-servers";
+              code = 6;
+              space = "dhcp4";
+              data = "172.19.149.1";
+            }
+            {
+              name = "ntp-servers";
+              code = 42;
+              space = "dhcp4";
+              data = "172.19.149.1";
+            }
+          ];
+          subnet4 = [
+            {
+              id = 1;
+              pools = [
+                {
+                  pool = "172.19.149.10 - 172.19.149.240";
+                }
+              ];
+              subnet = "172.19.149.0/24";
+            }
+          ];
+        };
+      };
+    }
   );
 }
