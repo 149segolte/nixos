@@ -88,5 +88,32 @@
         };
       };
     }
+    ++ lib.optional (lib.elem "hostapd" custom.tags) {
+      hostapd = {
+        enable = true;
+        radios = lib.mkIf (lib.elem "rpi" custom.tags) {
+          "wlp1s0u1u1" = {
+            countryCode = "US";
+            band = "5g";
+            channel = 155;
+            networks."wlp1s0u1u1" = {
+              ssid = "rpiout";
+              authentication.saePasswords = [ { password = ""; } ]; # TODO: set before use
+            };
+            wifi5 = {
+              enable = true;
+              capabilities = [
+                "MAX-MPDU-11454"
+                "SHORT-GI-80"
+                "SU-BEAMFORMEE"
+                "HTC-VHT"
+                "TX-STBC-2BY1"
+              ];
+              operatingChannelWidth = "80";
+            };
+          };
+        };
+      };
+    }
   );
 }
