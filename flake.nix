@@ -103,7 +103,8 @@
                 "nm"
                 "dnscrypt"
                 "tailscale"
-                # "hostapd"
+                "hostapd"
+                "ntpd"
               ];
             };
           };

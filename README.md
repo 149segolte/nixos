@@ -7,6 +7,7 @@
   - `ssh-keygen`
   - update github SSH keys
   - `git config --global` for `user.name` and `user.email`
+- enroll into tailscale
 - configure KDE
   - go through `system/plasma.nix`
 - configure chrome

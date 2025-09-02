@@ -95,10 +95,25 @@
           "wlp1s0u1u1" = {
             countryCode = "US";
             band = "5g";
-            channel = 155;
+            channel = 149;
+            settings = {
+              wds_sta = true;
+              vht_oper_centr_freq_seg0_idx = 155;
+            };
             networks."wlp1s0u1u1" = {
               ssid = "rpiout";
               authentication.saePasswords = [ { password = ""; } ]; # TODO: set before use
+            };
+            wifi4 = {
+              enable = true;
+              capabilities = [
+                "HT40+"
+                "SHORT-GI-20"
+                "SHORT-GI-40"
+                "RX-STBC12"
+                "MAX-AMSDU-7935"
+                "DSSS_CCK-40"
+              ];
             };
             wifi5 = {
               enable = true;
@@ -112,6 +127,50 @@
               operatingChannelWidth = "80";
             };
           };
+        };
+      };
+    }
+    ++ lib.optional (lib.elem "ntpd" custom.tags) {
+      ntpd-rs = {
+        enable = true;
+        useNetworkingTimeServers = false;
+        settings = {
+          server = [
+            {
+              allowlist = {
+                action = "ignore";
+                filter = [
+                  "172.19.149.0/24"
+                  "127.0.0.1/32"
+                ];
+              };
+              listen = "0.0.0.0:123";
+            }
+          ];
+          source = [
+            {
+              address = "3.pool.ntp.org";
+              mode = "server";
+            }
+            {
+              address = "europe.pool.ntp.org";
+              count = 2;
+              mode = "pool";
+            }
+            {
+              address = "asia.pool.ntp.org";
+              count = 2;
+              mode = "pool";
+            }
+            {
+              address = "time.cloudflare.com";
+              mode = "server";
+            }
+            {
+              address = "time.google.com";
+              mode = "server";
+            }
+          ];
         };
       };
     }

@@ -33,6 +33,9 @@
     ++ lib.optional (lib.elem "wpa_supplicant" custom.tags) {
       wireless.enable = true;
     }
+    ++ lib.optional (lib.elem "ntpd" custom.tags) {
+      timeServers = [ "127.0.0.1" ];
+    }
     ++ lib.optional (lib.elem "nm" custom.tags) {
       networkmanager = {
         enable = true;
