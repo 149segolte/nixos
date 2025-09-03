@@ -102,7 +102,10 @@
             };
             networks."wlp1s0u1u1" = {
               ssid = "rpiout";
-              authentication.saePasswords = [ { password = ""; } ]; # TODO: set before use
+              authentication = {
+                mode = "wpa2-sha256";
+                wpaPassword = ""; # TODO: set before use
+              };
             };
             wifi4 = {
               enable = true;

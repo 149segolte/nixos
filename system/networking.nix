@@ -83,4 +83,6 @@
       };
     }
   );
+
+  boot.kernel.sysctl."net.ipv4.ip_forward" = lib.mkIf (lib.elem "rpi" custom.tags) 1;
 }
