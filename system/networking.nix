@@ -78,6 +78,12 @@
           prefixLength = 24;
         }
       ];
+      nat = {
+        enable = true;
+        dmzHost = "172.19.149.1";
+        externalInterface = "wlan0";
+        internalIPs = [ "172.19.149.0/24" ];
+      };
     }
     ++ lib.optional (lib.elem "baremetal" custom.tags) {
       useDHCP = false;
