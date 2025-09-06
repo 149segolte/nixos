@@ -13,6 +13,7 @@
         hostName = custom.name;
         useDHCP = lib.mkDefault true;
         nftables.enable = true;
+        useNetworkd = lib.mkDefault true;
 
         nameservers = [
           "1.1.1.1#cloudflare-dns"
@@ -27,7 +28,10 @@
           "time.google.com"
         ];
 
-        firewall.trustedInterfaces = lib.mkIf (lib.elem "tailscale" custom.tags) [ "tailscale0" ];
+        firewall.trustedInterfaces =
+          [ ]
+          ++ lib.optional (lib.elem "tailscale" custom.tags) "tailscale0"
+          ++ lib.optional (lib.elem "rpi" custom.tags) "wlp1s0u1u3";
       }
     ]
     ++ lib.optional (lib.elem "wpa_supplicant" custom.tags) {
@@ -61,14 +65,14 @@
             method = "auto";
           };
         };
-        unmanaged = lib.mkIf (lib.elem "rpi" custom.tags) [ "wlp1s0u1u1" ];
+        unmanaged = lib.mkIf (lib.elem "rpi" custom.tags) [ "wlp1s0u1u3" ];
       };
     }
     ++ lib.optional (lib.elem "dnscrypt" custom.tags) {
       nameservers = [ "127.0.0.1" ];
     }
     ++ lib.optional (lib.elem "rpi" custom.tags) {
-      interfaces."wlp1s0u1u1".ipv4.addresses = [
+      interfaces."wlp1s0u1u3".ipv4.addresses = [
         {
           address = "172.19.149.1";
           prefixLength = 24;

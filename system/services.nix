@@ -27,6 +27,7 @@
         resolved = {
           enable = true;
           fallbackDns = [ ];
+          extraConfig = "DNSStubListener=no";
         };
       }
     ]
@@ -40,6 +41,7 @@
       dnscrypt-proxy2 = {
         enable = true;
         settings = {
+          listen_addresses = [ "0.0.0.0:53" ];
           odoh_servers = true;
           require_dnssec = true;
           require_nolog = true;
@@ -92,7 +94,7 @@
       hostapd = {
         enable = true;
         radios = lib.mkIf (lib.elem "rpi" custom.tags) {
-          "wlp1s0u1u1" = {
+          "wlp1s0u1u3" = {
             countryCode = "US";
             band = "5g";
             channel = 149;
@@ -100,12 +102,9 @@
               wds_sta = true;
               vht_oper_centr_freq_seg0_idx = 155;
             };
-            networks."wlp1s0u1u1" = {
+            networks."wlp1s0u1u3" = {
               ssid = "rpiout";
-              authentication = {
-                mode = "wpa2-sha256";
-                wpaPassword = ""; # TODO: set before use
-              };
+              authentication.saePasswords = [ { password = ""; } ]; # TODO: set before use
             };
             wifi4 = {
               enable = true;
@@ -113,7 +112,7 @@
                 "HT40+"
                 "SHORT-GI-20"
                 "SHORT-GI-40"
-                "RX-STBC12"
+                "RX-STBC1"
                 "MAX-AMSDU-7935"
                 "DSSS_CCK-40"
               ];
@@ -183,7 +182,7 @@
         settings = {
           interfaces-config = {
             interfaces = lib.mkIf (lib.elem "rpi" custom.tags) [
-              "wlp1s0u1u1"
+              "wlp1s0u1u3"
             ];
           };
           lease-database = {
