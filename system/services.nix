@@ -211,12 +211,14 @@
               code = 6;
               space = "dhcp4";
               data = "172.19.149.1";
+              always-send = true;
             }
             {
               name = "ntp-servers";
               code = 42;
               space = "dhcp4";
               data = "172.19.149.1";
+              always-send = true;
             }
           ];
           subnet4 = [

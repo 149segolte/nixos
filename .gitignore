@@ -1,2 +1,7 @@
+# Nix artifacts
 result
 result-*
+
+# Direnv
+.envrc
+.direnv/

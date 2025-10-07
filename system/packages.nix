@@ -42,6 +42,8 @@
         less.enable = true;
         bat.enable = true;
         zoxide.enable = true;
+        nix-ld.enable = true;
+        direnv.enable = true;
 
         git = {
           enable = true;
